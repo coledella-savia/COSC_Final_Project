@@ -15,6 +15,14 @@ SELECT id, userId, mealName, calories, description, mealDate
 FROM Meals WHERE id = ?;
 """
 
-get_user_by_name = "SELECT name FROM users WHERE name = ?"
-get_user_credentials = "SELECT salt, password FROM users WHERE name = ?"
-create_user = "INSERT INTO users (name, salt, password, WeightGoal, DailyCalorie) VALUES (?, ?, ?, ?, ?)"
+# User Queries
+
+register_user = """
+INSERT INTO Users (name, password, WeightGoal, DailyCalorie)
+VALUES (?, ?, ?, ?);
+"""
+
+get_user_by_name = """
+SELECT id, password FROM Users WHERE name = ?;
+"""
+

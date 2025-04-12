@@ -5,3 +5,7 @@ class UserRequest(BaseModel):
     password: str
     WeightGoal: int
     DailyCalorie: int
+
+class LoginRequest(BaseModel):
+    name: str
+    password: str

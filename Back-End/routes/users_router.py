@@ -1,60 +1,50 @@
-from fastapi import APIRouter, HTTPException, status, Request, Depends
-from fastapi.responses import JSONResponse
-from models.post.userRequest import UserRequest
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlite3 import Connection
 from db import get_db
 from auth import hash_password, verify_password, generate_session_token
-import queries
-from uuid import uuid4
-
-# Assuming you store sessions globally like in main.py
 from main import sessions
+from queries import register_user, get_user_by_name
+from models.post.userRequest import UserRequest, LoginRequest
 
 router = APIRouter()
 
+
 @router.post("/register")
-async def register_user(user: UserRequest):
-    db = get_db()
-    cursor = db.cursor()
+def register_user_endpoint(user: UserRequest, db: Connection = Depends(get_db)):
+    existing = db.execute(get_user_by_name, (user.name,)).fetchone()
+    if existing:
+        raise HTTPException(status_code=400, detail="Username already taken.")
 
-    # Check if user already exists
-    cursor.execute(queries.get_user_by_name, (user.name,))
-    if cursor.fetchone():
-        cursor.close()
-        raise HTTPException(status_code=400, detail="Username already exists")
+    salt, hashed_password = hash_password(user.password)
+    db.execute(register_user, (
+        user.name,
+        hashed_password.decode("utf-8"),
+        user.WeightGoal,
+        user.DailyCalorie
+    ))
+    db.commit()
 
-    # Hash password and store salt + hash
-    salt, hashed = hash_password(user.password)
+    return {"message": "User registered successfully."}
 
-    try:
-        db.execute('BEGIN')
-        cursor.execute(
-            queries.create_user,
-            (user.name, salt.decode(), hashed.decode(), user.WeightGoal, user.DailyCalorie)
-        )
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        cursor.close()
-        raise HTTPException(status_code=500, detail="Error registering user")
-
-    cursor.close()
-    return JSONResponse(content={"message": "User registered successfully"}, status_code=201)
 
 @router.post("/login")
-async def login_user(user: UserRequest):
-    db = get_db()
-    cursor = db.cursor()
+def login_user(login: LoginRequest, db: Connection = Depends(get_db)):
+    user = db.execute(get_user_by_name, (login.name,)).fetchone()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid username or password.")
 
-    cursor.execute(queries.get_user_credentials, (user.name,))
-    row = cursor.fetchone()
-    if not row:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    user_id, stored_hash = user
+    stored_salt = stored_hash[:29]
 
-    stored_salt, stored_hash = row[0], row[1]
-    if not verify_password(stored_salt, stored_hash, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not verify_password(stored_salt, stored_hash, login.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password.")
 
-    # Create a session token
     token = generate_session_token()
-    sessions[token] = Session.Session(user.name)  # Assuming Session takes username
-    return {"message": "Login successful", "token": token}
+    sessions[token] = {
+        "user_id": user_id,
+        "name": login.name
+    }
+
+    return {"token": token, "message": "Login successful"}
+

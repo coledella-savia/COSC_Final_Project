@@ -9,7 +9,7 @@ from fastapi import FastAPI, Depends, HTTPException, Request
 from threading import current_thread, local
 
 # Routes
-
+from routes.users_router import router as user_router
 from routes.meal_router import router as meal_router
 
 app = FastAPI()
@@ -25,5 +25,5 @@ app.add_middleware(
 )
 
 
-
+app.include_router(user_router, prefix="/users", tags=["users"])
 app.include_router(meal_router, prefix="/meals", tags=["meals"])
