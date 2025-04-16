@@ -1,36 +1,84 @@
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
+import { createRouter, createWebHistory } from "vue-router";
+import Home from "../views/HomeView.vue"
+import { useAuthStore } from "@/stores/auth";
+import { buildPostRequest } from "@/requests/requests.factory";
+import type { LoginResponse } from "@/models/LoginResponse";
 
-// Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { setupLayouts } from 'virtual:generated-layouts'
-import { routes } from 'vue-router/auto-routes'
+async function checkRefresh() {
+  const authStore = useAuthStore();
+  let url = "http://localhost:8000" + "/refresh";
+  return fetch(url, buildPostRequest(""))
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      throw new Error("No session token detected");
+    })
+    .then((data: LoginResponse) => {
+      console.log("SessionToken detected, logging in");
+      authStore.setAuthentication({ isAuthenticated: true, token: data.Token });
+      return data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
-})
+  routes: [
+    {
+      path: "/",
+      name: "Home",
+      component: Home,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/Dashboard",
+      name: "Dashboard",
+      component: () => import("../views/Dashboard.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("../views/Login.vue")
+    },
+    {
+      path: "/log",
+      name: "log",
+      component: () => import("../views/LogView.vue"),
+      meta: { requiresAuth: true },
+    },
+  ],
+});
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
-router.onError((err, to) => {
-  if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
-    if (!localStorage.getItem('vuetify:dynamic-reload')) {
-      console.log('Reloading page to fix dynamic import error')
-      localStorage.setItem('vuetify:dynamic-reload', 'true')
-      location.assign(to.fullPath)
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  console.log("Route-Guard: is auth:");
+  console.log(authStore.isAuthenticated);
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // if the route requires auth
+    if (authStore.isAuthenticated) {
+      // and the user is authenticated
+      next();
     } else {
-      console.error('Dynamic import error, reloading page did not fix it', err)
+      // the user is not authenticated, check for session token
+      checkRefresh().then((data) => {
+        console.log(data);
+        // the user is authenticated after the check
+        if (authStore.isAuthenticated) {
+          next();
+        }
+        // the user is not authenticated after the check
+        else {
+          next("/login");
+        }
+      });
     }
   } else {
-    console.error(err)
+    next();
   }
-})
+});
 
-router.isReady().then(() => {
-  localStorage.removeItem('vuetify:dynamic-reload')
-})
-
-export default router
+export default router;

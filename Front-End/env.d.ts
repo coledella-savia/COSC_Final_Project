@@ -1,3 +1,1 @@
-/// <reference types="vite/client" />
-/// <reference types="unplugin-vue-router/client" />
-/// <reference types="vite-plugin-vue-layouts/client" />
+VUE_APP_BASEURL = "http://0.0.0.0:8000";

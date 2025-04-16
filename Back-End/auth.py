@@ -1,8 +1,10 @@
 import bcrypt
 import secrets
 import string
-# from models import Session
+from models import Session
 
+
+sessions = {}
 
 def hash_password(password):
     salt = bcrypt.gensalt()  # Generate a random salt
@@ -25,8 +27,24 @@ def generate_session_token():
     return session_token
 
 
-def validate_token(sessions: dict[str, Session.Session], token):
+def validate_token(token):
+    print(token)
     if token in sessions:
         if not sessions[token].is_expired():
             return sessions[token]
     return None
+
+def get_user_id_from_session(session_token):
+    if session_token in sessions:
+        return sessions[session_token]["user_id"]
+    else:
+        return None
+    
+def get_sessions():
+    return sessions
+    
+
+"""
+session_token=TzoKOZEtjFAQWN01ZuR8b5w0F7lNVqEd; Path=/; Secure; HttpOnly; Expires=Tue, 15 Apr 2025 16:29:52 GMT;
+
+"""
