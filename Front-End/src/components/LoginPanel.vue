@@ -20,7 +20,7 @@ function login() {
     let url = "http://localhost:8000" + "/users/login"
     console.log(username)
     fetch(url, buildLoginRequest(username.value, password.value)).then((response) => {
-        if (response.status === 400) {
+        if (response.status === 400 || response.status === 401) {
             throw new Error('Invalid username or password')
         }
         console.log(response)
@@ -58,6 +58,8 @@ function login() {
 
         <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click.prevent="login"
             :disabled="isAttemptingAuth">Login</v-btn>
+        <v-btn color="primary" size="large" variant="tonal"
+            ><RouterLink to="/register">Register</RouterLink></v-btn>
 
     </v-card>
 </template>

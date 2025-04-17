@@ -18,8 +18,9 @@ FROM Meals WHERE id = ?;
 # User Queries
 
 register_user = """
-INSERT INTO Users (name, password, WeightGoal, DailyCalorie)
-VALUES (?, ?, ?, ?);
+INSERT INTO Users
+(name, password, height, age, gender, WeightGoal, DailyCalorie)
+VALUES(?, ?, ?, ?, ?, ?, ?);
 """
 
 get_user_by_name = """

@@ -28,7 +28,7 @@ function submit() {
             router.push('/dashboard');
     }).catch(() => {
         err.value = true
-        errMsg.value = "Error inserting player"
+        errMsg.value = "Error inserting meal"
         loading.value = false
     })
     loading.value = false

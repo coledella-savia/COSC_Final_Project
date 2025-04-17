@@ -27,6 +27,9 @@ def register_user_endpoint(user: UserRequest, db: Connection = Depends(get_db)):
     db.execute(register_user, (
         user.name,
         hashed_password.decode("utf-8"),
+        user.height,
+        user.age,
+        user.gender,
         user.WeightGoal,
         user.DailyCalorie
     ))
