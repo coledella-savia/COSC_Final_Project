@@ -27,3 +27,7 @@ get_user_by_name = """
 SELECT id, password FROM Users WHERE name = ?;
 """
 
+get_meals_by_userid = """
+SELECT id, userId, mealName, calories, description, mealDate
+FROM Meals WHERE userId = ?;
+"""

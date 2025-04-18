@@ -25,9 +25,13 @@ async function loadMeals() {
         console.error("Failed to load meals:", error);
     }
 }
+
+console.log(authStore.isAuthenticated)
+
 </script>
 
-
 <template>
-    <p>Welcome to dashboard</p>
+  <v-main>
+    <Dashboard />
+  </v-main>
 </template>

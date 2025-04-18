@@ -26,11 +26,11 @@ async def get_meal(request: Request):
     cursor.close()
     return items
 
-@ router.get("/{meal_id}")
-async def get_meal(meal_id: str):
+@ router.get("/{user_id}")
+async def get_meal(user_id: str):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute(queries.get_meal_by_id, (meal_id))
+    cursor.execute(queries.get_meals_by_userid, (user_id,))
     items = cursor.fetchall()
     cursor.close()
 

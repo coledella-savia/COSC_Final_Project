@@ -16,7 +16,7 @@ async function checkRefresh() {
     })
     .then((data: LoginResponse) => {
       console.log("SessionToken detected, logging in");
-      authStore.setAuthentication({ isAuthenticated: true, token: data.Token });
+      authStore.setAuthentication({ isAuthenticated: true, token: data.Token, user_id: data.id });
       return data;
     })
     .catch((error) => {
@@ -25,7 +25,7 @@ async function checkRefresh() {
 }
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory("/"),
   routes: [
     {
       path: "/",
@@ -34,9 +34,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/Dashboard",
+      path: "/dashboard",
       name: "Dashboard",
-      component: () => import("../views/Dashboard.vue"),
+      component: () => import("../views/DashboardView.vue"),
       meta: { requiresAuth: true },
     },
     {
