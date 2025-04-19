@@ -27,7 +27,6 @@ async function checkRefresh() {
 const router = createRouter({
   history: createWebHistory("/"),
   routes: [
-,
     {
       path: "/dashboard",
       name: "Dashboard",
@@ -43,6 +42,12 @@ const router = createRouter({
       path: "/log",
       name: "log",
       component: () => import("../views/LogView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/progress",
+      name: "progress",
+      component: () => import("../views/ProgressView.vue"),
       meta: { requiresAuth: true },
     },
     {

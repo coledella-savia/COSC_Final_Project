@@ -134,7 +134,7 @@ async function loadMeals() {
             </v-list-item>
 
             <v-list-item
-              to="/dashboard"
+              to="/progress"
               class="mb-4"
             >
               <v-card
