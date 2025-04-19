@@ -72,15 +72,15 @@ async function loadMeals() {
                 <v-card-text>
                   <div class="d-flex justify-space-between align-center">
                     <div>
-                      <div class="text-h6">{{ meal.name }}</div>
-                      <div class="text-body-2 text-medium-emphasis">{{ meal.desc }}</div>
+                      <div class="text-h6">{{ meal.mealName }}</div>
+                      <div class="text-body-2 text-medium-emphasis">{{ meal.description }}</div>
                     </div>
                     <div class="text-h6 text-primary">
                       {{ meal.calories }} cal
                     </div>
                   </div>
                   <div class="text-caption text-medium-emphasis mt-2">
-                    {{ new Date(meal.meal_date).toLocaleDateString() }}
+                    {{ new Date(meal.mealDate).toLocaleDateString() }}
                   </div>
                 </v-card-text>
               </v-card>

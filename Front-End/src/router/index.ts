@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/HomeView.vue"
 import { useAuthStore } from "@/stores/auth";
 import { buildPostRequest } from "@/requests/requests.factory";
 import type { LoginResponse } from "@/models/LoginResponse";
+import Login from "@/views/Login.vue";
 
 async function checkRefresh() {
   const authStore = useAuthStore();
@@ -27,12 +27,7 @@ async function checkRefresh() {
 const router = createRouter({
   history: createWebHistory("/"),
   routes: [
-    {
-      path: "/",
-      name: "Home",
-      component: Home,
-      meta: { requiresAuth: true },
-    },
+,
     {
       path: "/dashboard",
       name: "Dashboard",
@@ -42,7 +37,7 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: () => import("../views/Login.vue")
+      component: Login
     },
     {
       path: "/log",

@@ -67,7 +67,7 @@ function logout() {
         <nav class="d-flex align-center">
           <v-btn
             v-for="link in [
-              { title: 'Home', to: '/' },
+
               { title: 'Dashboard', to: '/dashboard' },
               { title: 'Log Meal', to: '/log' }
             ]"
