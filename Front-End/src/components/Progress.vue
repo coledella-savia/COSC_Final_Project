@@ -1,10 +1,69 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { buildGetRequest } from '@/requests/requests.factory';
+import { Line } from 'vue-chartjs';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const authStore = useAuthStore();
 const mealData = ref([]);
+
+const chartData = computed(() => {
+  // Get the last 7 days
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return date.toISOString().split('T')[0];
+  }).reverse();
+
+  // Calculate total calories for each day
+  const calories = dates.map(date => {
+    const dayMeals = mealData.value.filter(meal => meal.mealDate.startsWith(date));
+    return dayMeals.reduce((total, meal) => total + meal.calories, 0);
+  });
+
+  return {
+    labels: dates.map(date => new Date(date).toLocaleDateString('en-US', { weekday: 'short' })),
+    datasets: [
+      {
+        label: 'Calories',
+        data: calories,
+        borderColor: '#4CAF50',
+        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+        tension: 0.4,
+        fill: true
+      }
+    ]
+  };
+});
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false
+    },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          return `Calories: ${context.raw}`;
+        }
+      }
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Calories'
+      }
+    }
+  }
+};
 
 onMounted(async () => {
   await loadMeals();
@@ -42,7 +101,7 @@ async function loadMeals() {
     </v-row>
 
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col cols="12">
         <v-card
           class="pa-6"
           color="surface"
@@ -53,42 +112,11 @@ async function loadMeals() {
             Weekly Calorie Intake
           </v-card-title>
           <v-card-text>
-            <!-- Placeholder for chart -->
-            <div class="text-center pa-4">
-              <v-icon
-                icon="mdi-chart-line"
-                size="64"
-                color="primary"
-              ></v-icon>
-              <div class="text-body-1 mt-4">
-                Chart will be implemented here
-              </div>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="6">
-        <v-card
-          class="pa-6"
-          color="surface"
-          elevation="4"
-          rounded="lg"
-        >
-          <v-card-title class="text-h5 font-weight-bold mb-4">
-            Nutrition Breakdown
-          </v-card-title>
-          <v-card-text>
-            <!-- Placeholder for nutrition breakdown -->
-            <div class="text-center pa-4">
-              <v-icon
-                icon="mdi-pie-chart"
-                size="64"
-                color="secondary"
-              ></v-icon>
-              <div class="text-body-1 mt-4">
-                Nutrition breakdown will be implemented here
-              </div>
+            <div style="height: 400px">
+              <Line
+                :data="chartData"
+                :options="chartOptions"
+              />
             </div>
           </v-card-text>
         </v-card>
