@@ -48,6 +48,8 @@ function register() {
         router.push('/login');
     }).catch(error => {
         err.value = true
+        errorMessages.value = error
+        
     });
 }
 </script>
