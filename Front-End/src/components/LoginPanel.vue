@@ -39,106 +39,108 @@ function login() {
 </script>
 
 <template>
-    <v-snackbar v-model="err" color="red">
-        Invalid username or password
-    </v-snackbar>
-    <v-snackbar v-model="success" color="green">
-        Login successful
-    </v-snackbar>
-    <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
-        <div class="text-subtitle-1 text-medium-emphasis">Account</div>
-        <v-text-field v-model="username" placeholder="Username" density="compact" prepend-inner-icon="mdi-email-outline"
-            variant="outlined"></v-text-field>
-        <v-text-field v-model="password" type="password" placeholder="Password" density="compact"
-            prepend-inner-icon="mdi-lock-outline" variant="outlined" loading>
-            <template v-slot:loader>
-                <v-progress-linear :active="isAttemptingAuth" height="7" indeterminate></v-progress-linear>
-            </template></v-text-field>
+  <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
+    <v-card
+      class="mx-auto pa-8"
+      elevation="8"
+      max-width="448"
+      rounded="lg"
+      color="surface"
+    >
+      <v-card-title class="text-h4 font-weight-bold text-center mb-6">
+        NutriTrack
+      </v-card-title>
 
+      <v-card-subtitle class="text-center mb-8">
+        Sign in to continue to NutriTrack and start tracking!
+      </v-card-subtitle>
 
-        <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click.prevent="login"
-            :disabled="isAttemptingAuth">Login</v-btn>
-        <v-btn color="primary" size="large" variant="tonal"
-            ><RouterLink to="/register">Register</RouterLink></v-btn>
+      <v-form @submit.prevent="login">
+        <v-text-field
+          v-model="username"
+          label="Username"
+          density="comfortable"
+          variant="outlined"
+          prepend-inner-icon="mdi-account-outline"
+          :rules="[v => !!v || 'Username is required']"
+          class="mb-4"
+        ></v-text-field>
 
+        <v-text-field
+          v-model="password"
+          label="Password"
+          type="password"
+          density="comfortable"
+          variant="outlined"
+          prepend-inner-icon="mdi-lock-outline"
+          :rules="[v => !!v || 'Password is required']"
+          class="mb-6"
+        >
+          <template v-slot:loader>
+            <v-progress-linear
+              :active="isAttemptingAuth"
+              height="4"
+              indeterminate
+              color="primary"
+            ></v-progress-linear>
+          </template>
+        </v-text-field>
+
+        <v-btn
+          block
+          size="large"
+          color="primary"
+          type="submit"
+          :loading="isAttemptingAuth"
+          class="mb-4"
+        >
+          Sign In
+        </v-btn>
+
+        <div class="text-center">
+          <span class="text-body-2 text-medium-emphasis">Don't have an account?</span>
+          <v-btn
+            to="/register"
+            variant="text"
+            color="primary"
+            class="text-none"
+          >
+            Sign Up
+          </v-btn>
+        </div>
+      </v-form>
     </v-card>
+
+    <v-snackbar
+      v-model="err"
+      color="error"
+      location="top"
+      timeout="3000"
+    >
+      Invalid username or password
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="success"
+      color="success"
+      location="top"
+      timeout="3000"
+    >
+      Login successful
+    </v-snackbar>
+  </v-container>
 </template>
 
 <style scoped>
-.login-panel {
-    display: flex;
-    flex-direction: column;
-    margin: 2rem;
-    width: 24rem;
-    border-style: solid;
-    border-width: thick;
-    border-color: hsla(160, 100%, 37%, 1);
-    padding-top: 1rem;
+.v-card {
+  transition: transform 0.2s;
 }
 
-.row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+.v-card:hover {
+  transform: translateY(-2px);
 }
 
-
-.error-message {
-    color: red;
+.v-btn {
+  letter-spacing: 0.5px;
 }
-
-.success-message {
-    color: greenyellow;
-}
-
-.input-boxes {
-    padding-top: 1rem;
-}
-
-span {
-    width: 8rem
-}
-
-.error-message {
-    width: 100%;
-    padding-left: 1rem;
-    padding-top: 0.5rem;
-}
-
-.login-but {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    margin-right: 2rem;
-}
-
-.box-title {
-    margin-left: 1rem;
-    font-size: 20px;
-    color: hsla(160, 100%, 37%, 1);
-}
-
-.input-with-span {
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0.2rem;
-}
-
-input,
-textarea {
-    padding: 9px;
-    border: solid 2px rgb(109, 109, 109);
-    outline: 0;
-    font: normal 13px/100% Verdana, Tahoma, sans-serif;
-    width: 10rem;
-    background: #cccccc;
-    box-shadow: hsla(160, 100%, 37%, 0.2) 0px 0px 8px;
-}
-
-input:hover,
-textarea:hover,
-input:focus,
-textarea:focus {
-    border-color: hsla(160, 100%, 37%, 1);
-
-}
-</style>@/models/LoginResponse
+</style>

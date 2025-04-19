@@ -51,121 +51,111 @@ function logout() {
 </script>
 
 <template>
-  <v-app class="#181818">
-    <v-app-bar :elevation="0"  color="#181818" class="nav-text navShadow">
-      <nav>
-        <div class="nav-left">
-          <RouterLink
+  <v-app theme="dark">
+    <v-app-bar
+      :elevation="0"
+      color="surface"
+      class="nav-bar"
+    >
+      <v-container class="d-flex align-center">
+        <v-toolbar-title class="text-h5 font-weight-bold">
+          <RouterLink to="/" class="text-decoration-none text-primary">NutriTrack</RouterLink>
+        </v-toolbar-title>
+        
+        <v-spacer></v-spacer>
+        
+        <nav class="d-flex align-center">
+          <v-btn
+            v-for="link in [
+              { title: 'Home', to: '/' },
+              { title: 'Dashboard', to: '/dashboard' },
+              { title: 'Log Meal', to: '/log' }
+            ]"
+            :key="link.to"
+            :to="link.to"
+            variant="text"
+            class="mx-2 text-none"
+          >
+            {{ link.title }}
+          </v-btn>
           
-          to="/">Home</RouterLink>
-          <RouterLink to="/dashboard">Dashboard</RouterLink>
-          <RouterLink to="/log">Log Meal</RouterLink>
-        </div>
-        <div class="nav-right">
-          <RouterLink v-if="!authStore.isAuth" to="/login">Login</RouterLink>
-          <div v-if="authStore.isAuth">
-            <span>
-              Hello
-            </span>
-            <a @click="logout">Logout</a>
-          </div>
-        </div>
-      </nav>
+          <v-divider vertical class="mx-4"></v-divider>
+          
+          <template v-if="!authStore.isAuth">
+            <v-btn
+              to="/login"
+              variant="outlined"
+              color="primary"
+              class="text-none"
+            >
+              Login
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  variant="text"
+                  class="text-none"
+                >
+                  <v-avatar size="32" class="mr-2">
+                    <v-icon>mdi-account</v-icon>
+                  </v-avatar>
+                  Account
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title>Hello, User</v-list-item-title>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item @click="logout">
+                  <v-list-item-title>Logout</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+        </nav>
+      </v-container>
     </v-app-bar>
 
-    <RouterView />
+    <v-main>
+      <v-container fluid>
+        <RouterView />
+      </v-container>
+    </v-main>
   </v-app>
 </template>
-<style> 
-#app {
-  margin:0;
-  padding: 0;
-  background-color: #181818;
+
+<style>
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #2196F3;
+  --background-color: #121212;
+  --surface-color: #1E1E1E;
+  --text-color: #FFFFFF;
 }
 
-.v-toolbar {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+.v-application {
+  background-color: var(--background-color) !important;
 }
 
-.navShadow {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-</style>
-
-<style scoped>
-
-
-#app> {
-  padding: 0;
-  margin: 0;
-  background-color: #181818;
+.nav-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.nav-text {
-  color: white;
+.v-btn {
+  text-transform: none !important;
+  letter-spacing: 0.5px;
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.v-container {
+  max-width: 1280px;
 }
 
-.logo {
-  display: block;
-
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  color: white;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-  cursor: pointer
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-
-    font-size: 1rem;
-    padding: 1rem 0;
-
-  }
+.v-main {
+  background-color: var(--background-color);
+  min-height: calc(100vh - 64px);
 }
 </style>

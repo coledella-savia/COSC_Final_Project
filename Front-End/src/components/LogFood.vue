@@ -37,60 +37,114 @@ function submit() {
 </script>
 
 <template>
- <v-row justify="center">
-    <v-col cols="12" lg="6" md="8" sm="10">
-      <v-card ref="form">
-        <v-card-text>
-          <v-text-field
-            ref="Name"
-            v-model="name"
-            :error-messages="errorMessages"
-            :rules="[() => !!name || 'This field is required']"
-            label="Meal/Snack Name"
-            required
-          ></v-text-field>
-          <v-text-field
-            ref="Description"
-            :error-messages="errorMessages"
-            v-model="desc"
-            label="Desription of meal/snack"
-            required
-          ></v-text-field>
-          <v-number-input
-            ref="Calories"
-            v-model="calories"
-            :error-messages="errorMessages"
-            :rules="[() => !!calories || 'This field is required', calories >= 0 || 'Cannot have negative calories']"
-            label="Calories"
-            required
-          ></v-number-input>
-          <v-date-picker
-            width="350"
-            :error-messages="errorMessages"
-            :rules="[() => !!meal_date || 'This field is required']"
-            label="Date Input"
-            v-model="meal_date"
-            required
-          ></v-date-picker>
-        
-        </v-card-text>
-        <v-divider class="mt-12"></v-divider>
-        <v-card-actions>
-            <v-tooltip v-if="formHasErrors" location="left">
-              <template v-slot:activator="{ props }">
-              </template>
-            </v-tooltip>
-          <v-btn 
-            size="large"
-          color="primary" variant="text" @click="submit" block> Submit </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-snackbar v-model="err" color="red">
-                {{ errMsg }}
-            </v-snackbar>
-            <v-snackbar v-model="suc" color="green">
-                Successfully Added Meal
-            </v-snackbar>
-  </v-row>
+  <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
+    <v-card
+      class="mx-auto pa-8"
+      elevation="8"
+      max-width="600"
+      rounded="lg"
+      color="surface"
+    >
+      <v-card-title class="text-h4 font-weight-bold text-center mb-6">
+        Log Your Meal
+      </v-card-title>
+
+      <v-card-subtitle class="text-center mb-8">
+        Track your nutrition and stay on top of your goals
+      </v-card-subtitle>
+
+      <v-form @submit.prevent="submit">
+        <v-text-field
+          v-model="name"
+          label="Meal/Snack Name"
+          variant="outlined"
+          density="comfortable"
+          :rules="[v => !!v || 'Meal name is required']"
+          class="mb-4"
+        ></v-text-field>
+
+        <v-textarea
+          v-model="desc"
+          label="Description"
+          variant="outlined"
+          density="comfortable"
+          :rules="[v => !!v || 'Description is required']"
+          class="mb-4"
+          rows="3"
+        ></v-textarea>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="calories"
+              label="Calories"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+              :rules="[
+                v => !!v || 'Calories is required',
+                v => v >= 0 || 'Calories must be positive'
+              ]"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="meal_date"
+              label="Date"
+              type="date"
+              variant="outlined"
+              density="comfortable"
+              :rules="[v => !!v || 'Date is required']"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-btn
+          block
+          size="large"
+          color="primary"
+          type="submit"
+          :loading="loading"
+          class="mb-4"
+        >
+          Log Meal
+        </v-btn>
+      </v-form>
+    </v-card>
+
+    <v-snackbar
+      v-model="err"
+      color="error"
+      location="top"
+      timeout="3000"
+    >
+      {{ errMsg }}
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="suc"
+      color="success"
+      location="top"
+      timeout="3000"
+    >
+      Successfully Added Meal
+    </v-snackbar>
+  </v-container>
 </template>
+
+<style scoped>
+.v-card {
+  transition: transform 0.2s;
+}
+
+.v-card:hover {
+  transform: translateY(-2px);
+}
+
+.v-btn {
+  letter-spacing: 0.5px;
+}
+</style>

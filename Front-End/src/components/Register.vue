@@ -55,154 +55,164 @@ function register() {
 </script>
 
 <template>
-    <v-row justify="center">
-    <v-col cols="12" lg="6" md="8" sm="10">
-      <v-card ref="form">
-        <v-card-text>
-          <v-text-field
-            ref="username"
-            v-model="name"
-            :error-messages="errorMessages"
-            :rules="[() => !!name || 'This field is required']"
-            label="Username"
-            required
-          ></v-text-field>
-          <v-text-field
-            ref="password"
-            :error-messages="errorMessages"
-            v-model="user_pass"
-            label="password"
-            required
-          ></v-text-field>
-          <v-number-input
-            ref="Height"
-            v-model="height"
-            :error-messages="errorMessages"
-            :rules="[() => !!height || 'This field is required', height >= 0 || 'Cannot have negative height']"
-            label="Height in CM"
-            required
-          ></v-number-input>
-          <v-number-input
-            ref="Age"
-            v-model="age"
-            :error-messages="errorMessages"
-            :rules="[() => !!age || 'This field is required', age >= 0 || 'Cannot have negative age']"
-            label="Age"
-            required
-          ></v-number-input>
-          <v-autocomplete
-            :items="['Male', 'Female']"
-            v-model="gender"
-            label="Gender"
-            required
-          ></v-autocomplete>
-          <v-number-input
-            ref="Weight Goal"
-            v-model="weightgoal"
-            :error-messages="errorMessages"
-            :rules="[() => !!weightgoal || 'This field is required', weightgoal >= 0 || 'Cannot have negative weight']"
-            label="Weight Goal in Kg"
-            required
-          ></v-number-input>
-        
-        
-        </v-card-text>
-        <v-divider class="mt-12"></v-divider>
-        <v-card-actions>
-            <v-tooltip v-if="formHasErrors" location="left">
-              <template v-slot:activator="{ props }">
-              </template>
-            </v-tooltip>
-          <v-btn 
-            size="large"
-          color="primary" variant="text" @click="register" block> Register </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-snackbar v-model="err" color="red">
-                {{ errorMessages }}
-            </v-snackbar>
-            <v-snackbar v-model="success" color="green">
-                Successfully Added Meal
-            </v-snackbar>
-  </v-row>
+  <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
+    <v-card
+      class="mx-auto pa-8"
+      elevation="8"
+      max-width="600"
+      rounded="lg"
+      color="surface"
+    >
+      <v-card-title class="text-h4 font-weight-bold text-center mb-6">
+        Create Your Account
+      </v-card-title>
+
+      <v-card-subtitle class="text-center mb-8">
+        Join NutriTrack and start your health journey
+      </v-card-subtitle>
+
+      <v-form @submit.prevent="register">
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="name"
+              label="Username"
+              variant="outlined"
+              density="comfortable"
+              :rules="[v => !!v || 'Username is required']"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="user_pass"
+              label="Password"
+              type="password"
+              variant="outlined"
+              density="comfortable"
+              :rules="[v => !!v || 'Password is required']"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="height"
+              label="Height (cm)"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+              :rules="[
+                v => !!v || 'Height is required',
+                v => v > 0 || 'Height must be positive'
+              ]"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="age"
+              label="Age"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+              :rules="[
+                v => !!v || 'Age is required',
+                v => v > 0 || 'Age must be positive'
+              ]"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-select
+              v-model="gender"
+              :items="['Male', 'Female']"
+              label="Gender"
+              variant="outlined"
+              density="comfortable"
+              :rules="[v => !!v || 'Gender is required']"
+              class="mb-4"
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="weightgoal"
+              label="Weight Goal (kg)"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+              :rules="[
+                v => !!v || 'Weight goal is required',
+                v => v > 0 || 'Weight goal must be positive'
+              ]"
+              class="mb-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-btn
+          block
+          size="large"
+          color="primary"
+          type="submit"
+          :loading="isAttemptingAuth"
+          class="mb-4"
+        >
+          Create Account
+        </v-btn>
+
+        <div class="text-center">
+          <span class="text-body-2 text-medium-emphasis">Already have an account?</span>
+          <v-btn
+            to="/login"
+            variant="text"
+            color="primary"
+            class="text-none"
+          >
+            Sign In
+          </v-btn>
+        </div>
+      </v-form>
+    </v-card>
+
+    <v-snackbar
+      v-model="err"
+      color="error"
+      location="top"
+      timeout="3000"
+    >
+      {{ errorMessages }}
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="success"
+      color="success"
+      location="top"
+      timeout="3000"
+    >
+      Registration successful
+    </v-snackbar>
+  </v-container>
 </template>
 
 <style scoped>
-.login-panel {
-    display: flex;
-    flex-direction: column;
-    margin: 2rem;
-    width: 24rem;
-    border-style: solid;
-    border-width: thick;
-    border-color: hsla(160, 100%, 37%, 1);
-    padding-top: 1rem;
+.v-card {
+  transition: transform 0.2s;
 }
 
-.row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+.v-card:hover {
+  transform: translateY(-2px);
 }
 
-
-.error-message {
-    color: red;
+.v-btn {
+  letter-spacing: 0.5px;
 }
-
-.success-message {
-    color: greenyellow;
-}
-
-.input-boxes {
-    padding-top: 1rem;
-}
-
-span {
-    width: 8rem
-}
-
-.error-message {
-    width: 100%;
-    padding-left: 1rem;
-    padding-top: 0.5rem;
-}
-
-.login-but {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    margin-right: 2rem;
-}
-
-.box-title {
-    margin-left: 1rem;
-    font-size: 20px;
-    color: hsla(160, 100%, 37%, 1);
-}
-
-.input-with-span {
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0.2rem;
-}
-
-input,
-textarea {
-    padding: 9px;
-    border: solid 2px rgb(109, 109, 109);
-    outline: 0;
-    font: normal 13px/100% Verdana, Tahoma, sans-serif;
-    width: 10rem;
-    background: #cccccc;
-    box-shadow: hsla(160, 100%, 37%, 0.2) 0px 0px 8px;
-}
-
-input:hover,
-textarea:hover,
-input:focus,
-textarea:focus {
-    border-color: hsla(160, 100%, 37%, 1);
-
-}
-</style>@/models/LoginResponse
+</style>
