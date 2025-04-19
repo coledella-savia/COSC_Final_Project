@@ -1,4 +1,4 @@
-# 🍽️ Online Calorie Counter – COSC3506 Final Project
+# 🍽️ NutriTrack, an online calorie counter – COSC3506 Final Project
 
 ## Team Members
 - Cole Della-Savia  
