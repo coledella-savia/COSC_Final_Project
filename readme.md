@@ -72,9 +72,10 @@ Our team followed the **Agile methodology** to ensure continuous delivery, itera
 
 ## 🚀 Getting Started
 
-### Clone the Repository
+### Clone the Repository, initialise the frontend and backend
 ```bash
 git clone https://github.com/coledella-savia/COSC_Final_Project.git
+
 cd COSC_Final_Project
 
 cd frontend
