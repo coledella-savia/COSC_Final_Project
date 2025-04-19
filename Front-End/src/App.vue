@@ -20,7 +20,7 @@ async function checkRefresh() {
     })
     .then((data: LoginResponse) => {
       console.log("SessionToken detected, logging in");
-      authStore.setAuthentication({ isAuthenticated: true, token: data.Token });
+      authStore.setAuthentication({ user_id: Number(data.User), isAuthenticated: true, token: data.Token });
       return data;
     })
     .catch((error) => {
