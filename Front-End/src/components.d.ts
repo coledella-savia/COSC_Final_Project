@@ -10,7 +10,6 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     Dashboard: typeof import('./components/Dashboard.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
-    Home: typeof import('./components/Home.vue')['default']
     LogFood: typeof import('./components/LogFood.vue')['default']
     LoginPanel: typeof import('./components/LoginPanel.vue')['default']
     Progress: typeof import('./components/Progress.vue')['default']

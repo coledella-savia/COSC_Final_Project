@@ -30,7 +30,7 @@ function login() {
         success.value = true
         isAttemptingAuth.value = false
         authStore.setAuthentication({ user_id: Number(data.User), isAuthenticated: true, token: data.Token })
-        router.push('/home');
+        router.push('/log');
     }).catch(error => {
         err.value = true
         isAttemptingAuth.value = false
